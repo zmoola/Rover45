@@ -25,8 +25,6 @@
 
                 programMethods.CheckInput(input.Trim());
             }
-
-            Console.WriteLine("The Program has been terminated. Goodbye!");
             return;
         }
     }

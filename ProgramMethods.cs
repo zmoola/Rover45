@@ -9,7 +9,7 @@
     {
         private const string PromptInputZoneSize = "Please enter the zone size:\n";
 
-        private const string PromptInputStartPoint = "Please enter the Rover starting values:\n";
+        private const string PromptInputStartPoint = "Please enter the Rover starting location and orientation:\n";
 
         private const string PromptInputCommands = "Please enter the rover movement commands:\n";
 
@@ -38,7 +38,7 @@
                     "\tR - Rotate 90 degrees to the right\n" +
                     "\tL - Rotate 90 degrees to the left.\n";
 
-        private const string ErrCommandOutOfBounds = "The given commands places the Rover of the zone boundaries.\n" +
+        private const string ErrCommandOutOfBounds = "The given commands takes the Rover of the zone boundaries.\n" +
                                 "Please specify commands within the provided zone.\n";
 
         private Dictionary<string, decimal> Directions = new Dictionary<string, decimal>()
@@ -103,6 +103,9 @@
                 if (input.Equals("X", StringComparison.InvariantCultureIgnoreCase) || input.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
                 {
                     closeSession = true;
+
+                    Console.WriteLine("The Program has been terminated. Goodbye!");
+                    Environment.Exit(0);
                 }
                 else if (input.Equals("new", StringComparison.InvariantCultureIgnoreCase) || input.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -139,8 +142,6 @@
                         if (isValid)
                         {
                             CalculateNewPosition();
-                            Console.WriteLine("The Rover's new position is:\n");
-                            ShowCurrentPosition();
                         }
                     }
                 }
@@ -151,7 +152,7 @@
 
         private void ShowCurrentPosition()
         {
-            OutputMessage = $"{XOrdinate}{YOrdinate} {CurrentBearing}\n";
+            Console.WriteLine($"{XOrdinate}{YOrdinate} {CurrentBearing}\n");
         }
 
         private void initialise()
@@ -348,7 +349,15 @@
                         }
                 }
 
+                if (xOrdinate > XBoundary || yOrdinate > YBoundary)
+                {
+                    break;
+                }
+
             }
+
+            //Reset the commands so that it's reusable
+            RouteCommands = null;
 
             //Check that the new location is within bounds
             if (xOrdinate <= XBoundary && yOrdinate <= YBoundary)
@@ -360,14 +369,15 @@
 
                 CurrentBearingValue = bearing;
                 CurrentBearing = currentDirection;
+
+                Console.WriteLine("The Rover's new position is:\n");
+                ShowCurrentPosition();
             }
             else
             {
                 OutputMessage = ErrCommandOutOfBounds;
             }
             
-            //Reset the commands so that it's reusable
-            RouteCommands = null;
         }
     }
 }
